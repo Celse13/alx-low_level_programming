@@ -32,6 +32,6 @@ _putchar('\n');
 }
 }
 
-return (0);
+return;
 }
 
