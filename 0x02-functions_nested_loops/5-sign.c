@@ -1,30 +1,19 @@
-# include "main.h"
+#include "main.h"
+
 /**
+* _isalpha - checks if a character is alphabetic
+* @c: the character to check
 *
-/**
-* main - check the code.
-*
-* Return: Always 0.
+* Return: 1 if c is alphabetic (either lowercase or uppercase), 0 otherwise
 */
-*/
-
-
-
-int print_sign(int n)
+int _isalpha(int c)
 {
-if (n > 0)
+if ((c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z'))
 {
-_putchar('+');
 return (1);
-}
-else if (n < 0)
-{
-_putchar ('-');
-return (-1);
 }
 else
 {
-_putchar('0');
 return (0);
 }
 }
