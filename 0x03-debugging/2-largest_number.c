@@ -1,36 +1,34 @@
-#include "main.h"
-
 /**
- * largest_number - Returns the largest of three integers
- * @a: The first integer to compare
- * @b: The second integer to compare
- * @c: The third integer to compare
- *
- * This function takes three integers and returns the largest of the three.
- * If two or more integers are tied for the largest, the function returns one of them.
- *
- * Return: The largest of the three integers
- */
+* largest_number - returns the largest of 3 numbers
+* @a: first integer
+* @b: second integer
+* @c: third integer
+* Return: largest number
+*/
+
 int largest_number(int a, int b, int c)
 {
-    int largest;
+int largest;
 
-    // If a is the largest number
-    if (a > b && a > c)
-    {
-        largest = a;
-    }
-    // If c is the largest number
-    else if (a < b && c > b)
-    {
-        largest = c;
-    }
-    // If b is the largest number
-    else
-    {
-        largest = b;
-    }
+/* Check which number is largest */
+if (a > b && a > c)
+{
+largest = a;
+}
+else if (a > b && c > a)
+{
+largest = c;
+}
+else if (b > c)
+{
+largest = b;
+}
+else
+{
+largest = c;
+}
 
-    return (largest);
+/* Return the largest number */
+return (largest);
 }
 
