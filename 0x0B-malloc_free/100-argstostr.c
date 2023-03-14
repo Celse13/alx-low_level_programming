@@ -1,7 +1,5 @@
 #include "main.h"
-
 #include <stdlib.h>
-
 /**
 * argstostr - main entry
 * @ac: int input
@@ -17,8 +15,7 @@ return (NULL);
 for (i = 0; i < ac; i++)
 {
 for (n = 0; av[i][n]; n++)
-{
-	l++;
+l++;
 }
 l += ac;
 str = malloc(sizeof(char) * l + 1);
@@ -37,5 +34,4 @@ str[r++] = '\n';
 }
 }
 return (str);
-}
 }
