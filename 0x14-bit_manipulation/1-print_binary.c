@@ -1,23 +1,11 @@
 
 /**
-* print_binary - Prints the binary representation of a number.
-* @num: The number to be printed.
+* print_binary - display binary representation of a num.
+* @num: The number to be printed using binary representation
 */
 void print_binary(unsigned long int num)
 {
-unsigned long int bit = 1;
-
-while (bit < num)
-bit <<= 1;
-
-while (bit > 0)
-{
-if (num & bit)
-_putchar('1');
-else
-_putchar('0');
-
-bit >>= 1;
+if (num > 1)
+print_binary(num >> 1);
+_putchar((num & 1) + '0');
 }
-}
-
