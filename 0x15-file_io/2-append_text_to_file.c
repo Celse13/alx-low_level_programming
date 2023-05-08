@@ -1,12 +1,10 @@
 #include "main.h"
 
 /**
-* create_file - Creates a file with the given name and
-* writes the specified text content to it.
-* @filename: A pointer to the name of the file to create.
-* @text_content: A pointer to the string to write to the file.
-*
-* Return: On success, returns 1. On failure, returns -1.
+* append_text_to_file - appends the  text content to a file.
+* @filename: name of the file for the content to be appended
+* @text_content: the string to be appended
+* Return: On success, returns 1. On failure, returns -1
 */
 int append_text_to_file(const char *filename, char *text_content)
 {
