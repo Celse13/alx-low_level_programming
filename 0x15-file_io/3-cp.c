@@ -1,118 +1,88 @@
 #include "main.h"
-#include <stdio.h>
-#include <stdlib.h>
-
 /**
-* create_buffer - Allocates 1024 bytes for a buffer.
-* @filename: The name of the file buffer is storing chars for.
-*
-* Return: A pointer to the newly-allocated buffer.
+* open_files - Open source and destination files.
+* @src_file: Pointer to the source file name.
+* @dest_file: Pointer to the destination file name.
+* Return: Returns the file descriptor of the source file.
 */
-char *create_buffer(char *filename)
+int open_files(const char *src_file, const char *dest_file)
 {
-char *buffer;
-
-buffer = malloc(sizeof(char) * 1024);
-
-if (buffer == NULL)
+int src_fd, dest_fd;
+src_fd = open(src_file, O_RDONLY);
+if (src_fd == -1)
 {
-dprintf(STDERR_FILENO,
-"Error: Can't allocate memory for buffer in file %s\n", filename);
-exit(99);
+dprintf(STDERR_FILENO, "Error: Unable to read from file %s\n", src_file);
+exit(2);
 }
-
-return (buffer);
+dest_fd = open(dest_file, O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR |
+S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+if (dest_fd == -1)
+{
+dprintf(STDERR_FILENO, "Error: Unable to write to %s\n", dest_file);
+close(src_fd);
+exit(3);
 }
-
+return (src_fd);
+}
 /**
-* close_file - Closes file descriptor.
-* @fd: The file descriptor to be closed.
-* @filename: The name of the file being operated on.
-*
-* Return: void
+* copy_files - Copy content from source file to destination file.
+* @src_fd: File descriptor of the source file.
+* @dest_fd: File descriptor of the destination file.
 */
-void close_file(int fd, char *filename)
+void copy_files(int src_fd, int dest_fd)
 {
-int c;
+char buffer[BUFFER_SIZE];
+int read_count, write_count;
 
-c = close(fd);
-
-if (c == -1)
+while ((read_count = read(src_fd, buffer, BUFFER_SIZE)) > 0)
 {
-dprintf(STDERR_FILENO, "Error: Can't close file descriptor for %s\n", filename);
-exit(100);
+write_count = write(dest_fd, buffer, read_count);
+if (write_count < read_count)
+{
+dprintf(STDERR_FILENO, "Error: Unable to write to dest_file\n");
+exit(3);
 }
 }
-
+if (read_count == -1)
+{
+dprintf(STDERR_FILENO, "Error: Unable to read from source file\n");
+exit(2);
+}
+}
 /**
-* main - Copies the contents of a file to another file.
-* @argc: The number of arguments supplied to the program.
-* @argv: An array of pointers to the arguments.
+* custom_copy - Customized version of the 'cp' command to copy file content.
+* @arg_count: Number of arguments passed to the program.
+* @arg_values: Array of string arguments.
 *
-* Return: 0 on success.
-*
-* Description: If the argument count is incorrect - exit code 97.
-*              If file_from does not exist or cannot be read - exit code 98.
-*              If file_to cannot be created or written to - exit code 99.
-*              If file_to or file_from cannot be closed - exit code 100.
+* Return: 0 on success, otherwise exit with appropriate error codes.
 */
-int main(int argc, char *argv[])
+int custom_copy(int arg_count, char *arg_values[])
 {
-int from, to, r, w;
-char *buffer;
-
-if (argc != 3)
+int src_fd, dest_fd;
+if (arg_count != 3)
 {
-dprintf(STDERR_FILENO, "Usage: cp file_from file_to\n");
-exit(97);
+dprintf(STDERR_FILENO, "Invalid usage: custom_cp src_file dest_file\n");
+exit(1);
 }
-
-buffer = create_buffer(argv[2]);
-
-/* Open source file for reading */
-from = open(argv[1], O_RDONLY);
-if (from == -1)
+src_fd = open_files(arg_values[1], arg_values[2]);
+dest_fd = open(arg_values[2], O_WRONLY | O_CREAT | O_TRUNC, S_IRUSR | S_IWUSR | S_IRGRP | S_IWGRP | S_IROTH);
+if (dest_fd == -1)
 {
-dprintf(STDERR_FILENO,
-"Error: Can't read from file %s\n", argv[1]);
-free(buffer);
-exit(98);
+dprintf(STDERR_FILENO, "Error: Unable to write to %s\n", arg_values[2]);
+close(src_fd);
+exit(3);
 }
-
-/* Read data from source file into buffer and write to destination file */
-r = read(from, buffer, 1024);
-to = open(argv[2], O_CREAT | O_WRONLY | O_TRUNC, 0664);
-do {
-if (r == -1)
+copy_files(src_fd, dest_fd);
+if (close(src_fd) == -1)
 {
-dprintf(STDERR_FILENO,
-"Error: Can't read from file %s\n", argv[1]);
-free(buffer);
-close_file(from, argv[1]);
-close_file(to, argv[2]);
-exit(98);
+dprintf(STDERR_FILENO, "Error: Unable to close source file descriptor\n");
+exit(4);
 }
-
-w = write(to, buffer, r);
-if (w == -1)
+if (close(dest_fd) == -1)
 {
-dprintf(STDERR_FILENO,
-"Error: Can't write to file %s\n", argv[2]);
-free(buffer);
-close_file(from, argv[1]);
-close_file(to, argv[2]);
-exit(99);
+dprintf(STDERR_FILENO, "Error: Unable to close destination file descriptor\n");
+exit(4);
 }
-
-r = read(from, buffer, 1024);
-to = open(argv[2], O_WRONLY | O_APPEND);
-
-} while (r > 0);
-
-free(buffer);
-close_file(from, argv[1]);
-close_file(to, argv[2]);
-
 return (0);
 }
 
