@@ -15,9 +15,10 @@ int file_descriptor, write_status, length = 0;
 if (filename == NULL)
 return (-1);
 
-if (text_content != NULL)
+if (text_content == NULL)
+text_content = "";
+while (text_content != '\0')
 {
-for (length = 0; text_content[length];)
 length++;
 }
 
