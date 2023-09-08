@@ -3,33 +3,26 @@
  *  * hash_table_delete - freeing up the hash table;
  *   * @ht: pointer to the first nod of the hash
  *   **/
-
 void hash_table_delete(hash_table_t *ht)
 {
+	hash_node_t *current_node, *temporary_node;
 	unsigned long int n;
-	hash_node_t *current, *tempor_node;
 
 	if (ht == NULL)
 		return;
-	n = o;
-	while (n < ht->size)
+
+	for (n = 0; n < ht->size; n++)
 	{
-		if (ht->array[n] != NULL)
+		current_node = ht->array[n];
+		while (current_node)
 		{
-			current = ht->array[n];
-			while (current != NULL)
-			{
-				tempor_node = current->next;
-				free(current->key);
-				free(current->value);
-				free(current);
-				current = tempor_node;
-			}
-
+			temporary_node = current_node;
+			free(temporary_node->key);
+			free(temporary_node->value);
+			free(temporary_node);
+			current_node = current_node->next;
 		}
-		n++;
 	}
-
 	free(ht->array);
 	free(ht);
 }
