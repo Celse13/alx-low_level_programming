@@ -12,12 +12,11 @@ void hash_table_delete(hash_table_t *ht)
 
 	if (ht == NULL)
 		return;
-
-	while (n < hash_table->size)
+	while (n < ht->size)
 	{
-		if (hash_table->array[n] != NULL)
+		if (ht->array[n] != NULL)
 		{
-			current = hash_table->array[n];
+			current = ht->array[n];
 			while (current != NULL)
 			{
 				tempor_node = current->next;
