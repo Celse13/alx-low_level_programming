@@ -7,25 +7,26 @@
  *     **/
 char *hash_table_get(const hash_table_t *ht, const char *key)
 {
-	unsigned long int hash;
 	hash_node_t *current;
+	unsigned long int index;
 
-	if (ht == NULL || key == NULL)
+	if (ht == NULL || key == NULL || *key == '\0')
 		return (NULL);
 
-	hash = key_index((const unsigned char *)key, ht->size);
+	index = key_index((const unsigned char *)key, ht->size);
 
-	if (!ht->array[hash] || hash > ht->size)
+	if (index >= ht->size)
 		return (NULL);
 
-	current = ht->array[hash];
+	current = ht->array[index];
 
 	while (current != NULL)
 	{
 		if (strcmp(current->key, key) == 0)
-			return (current->key);
+			return (current->value);
 
 		current = current->next;
 	}
+
 	return (NULL);
 }
